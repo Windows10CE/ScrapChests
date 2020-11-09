@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 namespace Windows10CE
 {
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("com.Windows10CE.ScrapChests", "ScrapChests", "1.0.0")]
+    [BepInPlugin("com.Windows10CE.ScrapChests", "ScrapChests", "0.1.0")]
     public class ScrapChests : BaseUnityPlugin
     {
         private static Random _rand = new Random();
