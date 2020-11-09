@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BepInEx;
 using RoR2;
-using R2API;
 using R2API.Utils;
-using HarmonyLib;
 using UnityEngine.Networking;
 
 namespace Windows10CE
 {
-    [BepInDependency("com.bepis.r2api")]
-    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(ItemDropAPI))]
+    [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
     [BepInPlugin("com.Windows10CE.ScrapChests", "ScrapChests", "1.0.0")]
     public class ScrapChests : BaseUnityPlugin
     {
