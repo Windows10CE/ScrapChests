@@ -5,11 +5,14 @@ using RoR2;
 using R2API.Utils;
 using UnityEngine.Networking;
 using HarmonyLib;
+using System.Reflection.Emit;
+using System.Linq;
 
 namespace Windows10CE
 {
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("com.Windows10CE.ScrapChests", "ScrapChests", "0.1.0")]
+    [BepInPlugin("com.Windows10CE.ScrapChests", "ScrapChests", "1.0.0")]
+    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod)]
     public class ScrapChests : BaseUnityPlugin
     {
         private static List<List<PickupIndex>> _cachedItemLists = new List<List<PickupIndex>>();
@@ -84,14 +87,41 @@ namespace Windows10CE
             {
                 return true;
             };
+            On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.GrantMonsterTeamItem += (orig) =>
+            {
+                var list = _cachedItemLists[0].Select(x => PickupCatalog.GetPickupDef(x).itemIndex).ToArray();
+                Traverse.Create(typeof(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager)).Field("availableTier1Items").SetValue(list);
+                list = _cachedItemLists[1].Select(x => PickupCatalog.GetPickupDef(x).itemIndex).ToArray();
+                Traverse.Create(typeof(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager)).Field("availableTier2Items").SetValue(list);
+                list = _cachedItemLists[2].Select(x => PickupCatalog.GetPickupDef(x).itemIndex).ToArray();
+                Traverse.Create(typeof(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager)).Field("availableTier3Items").SetValue(list);
+            };
+            On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.EnsureMonsterTeamItemCount += (orig, itemNum) =>
+            {
+                return;
+            };
         }
 
-        [HarmonyPatch(typeof(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager), "GrantMonsterTeamItem")]
+        [HarmonyPatch(typeof(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager), MethodType.Constructor)]
         class ArtifactsPatch
         {
             static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
                 return new CodeMatcher(instructions)
+                    .MatchForward(false,
+                        new CodeMatch(OpCodes.Ldc_I4_4),
+                        new CodeMatch(OpCodes.Newarr, typeof(ItemTag)),
+                        new CodeMatch(OpCodes.Dup),
+                        new CodeMatch(OpCodes.Ldtoken),
+                        new CodeMatch(OpCodes.Call),
+                        new CodeMatch(OpCodes.Stsfld)
+                    )
+                    .RemoveInstructions(6)
+                    .InsertAndAdvance(
+                        new CodeInstruction(OpCodes.Ldc_I4_0),
+                        new CodeInstruction(OpCodes.Newarr, typeof(ItemTag)),
+                        new CodeInstruction(OpCodes.Stsfld, AccessTools.Field(typeof(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager), "forbiddenTags"))
+                    )
                     .InstructionEnumeration();
             }
         }
