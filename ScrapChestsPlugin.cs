@@ -19,7 +19,7 @@ namespace Windows10CE
 
         public void Awake()
         {
-            Harmony.CreateAndPatchAll(System.Reflection.Assembly.GetExecutingAssembly(), "com.Windows10CE.ScrapChests");
+            // Harmony.CreateAndPatchAll(System.Reflection.Assembly.GetExecutingAssembly(), "com.Windows10CE.ScrapChests");
 
             On.RoR2.Run.BuildDropTable += (orig, self) =>
             {
@@ -87,7 +87,7 @@ namespace Windows10CE
             {
                 return true;
             };
-            On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.GrantMonsterTeamItem += (orig) =>
+            /*On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.GrantMonsterTeamItem += (orig) =>
             {
                 var list = _cachedItemLists[0].Select(x => PickupCatalog.GetPickupDef(x).itemIndex).ToArray();
                 Traverse.Create(typeof(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager)).Field("availableTier1Items").SetValue(list);
@@ -95,14 +95,14 @@ namespace Windows10CE
                 Traverse.Create(typeof(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager)).Field("availableTier2Items").SetValue(list);
                 list = _cachedItemLists[2].Select(x => PickupCatalog.GetPickupDef(x).itemIndex).ToArray();
                 Traverse.Create(typeof(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager)).Field("availableTier3Items").SetValue(list);
-            };
+            };*/
             On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.EnsureMonsterTeamItemCount += (orig, itemNum) =>
             {
                 return;
             };
         }
 
-        [HarmonyPatch(typeof(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager), MethodType.Constructor)]
+        /*[HarmonyPatch(typeof(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager), MethodType.Constructor)]
         class ArtifactsPatch
         {
             static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -124,6 +124,6 @@ namespace Windows10CE
                     )
                     .InstructionEnumeration();
             }
-        }
+        }*/
     }
 }
