@@ -83,7 +83,7 @@ namespace Windows10CE
                     self.InvokeMethod("UpdatePickupDisplayAndAnimations");
                 }
             };
-            On.RoR2.ItemDef.ContainsTag += (orig, self, tag) =>
+            On.RoR2.ItemDef.ContainsTag += (_, _, _) =>
             {
                 return true;
             };
@@ -96,7 +96,7 @@ namespace Windows10CE
                 list = _cachedItemLists[2].Select(x => PickupCatalog.GetPickupDef(x).itemIndex).ToArray();
                 Traverse.Create(typeof(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager)).Field("availableTier3Items").SetValue(list);
             };*/
-            On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.EnsureMonsterTeamItemCount += (orig, itemNum) =>
+            On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.EnsureMonsterTeamItemCount += (_, _) =>
             {
                 return;
             };
