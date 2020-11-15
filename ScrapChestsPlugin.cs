@@ -9,8 +9,8 @@ using System.Linq;
 namespace Windows10CE
 {   
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("com.Windows10CE.ScrapChests", "ScrapChests", "1.0.0")]
-    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod)]
+    [BepInPlugin("com.Windows10CE.ScrapChests", "ScrapChests", "2.0.0")]
+    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ScrapChests : BaseUnityPlugin
     {
         private static List<List<PickupIndex>> _cachedItemLists = new List<List<PickupIndex>>();
