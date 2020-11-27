@@ -38,7 +38,7 @@ namespace ScrapChests
             self.availableBossDropList.Add(PickupCatalog.FindPickupIndex(ItemIndex.ScrapYellow));
         }
 
-        public static void ShopTerminalHook(On.RoR2.ShopTerminalBehavior.orig_Start _, ShopTerminalBehavior self)
+        public static void ShopTerminalHook(On.RoR2.ShopTerminalBehavior.orig_Start orig, ShopTerminalBehavior self)
         {
             if (NetworkServer.active)
             {
@@ -90,7 +90,7 @@ namespace ScrapChests
             orig(self);
         }
 
-        public static void EvolutionHook(On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.orig_EnsureMonsterTeamItemCount _, int _)
+        public static void EvolutionHook(On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.orig_EnsureMonsterTeamItemCount orig, int arg)
         {
             return;
         }
