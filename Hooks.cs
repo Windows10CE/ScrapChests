@@ -13,6 +13,7 @@ namespace ScrapChests
         {
             if (RunArtifactManager.instance.IsArtifactEnabled(ArtifactOfDebris.DebrisArtifact.def.artifactIndex))
             {
+                ScrapChestsPlugin.logSource.LogMessage("Artifact of Debris enabled, hooking (or already hooked) required methods.");
                 if (!ScrapChestsPlugin._currentlyHooked)
                 {
                     On.RoR2.Run.BuildDropTable += DropTableHook;
@@ -24,6 +25,7 @@ namespace ScrapChests
             }
             else
             {
+                ScrapChestsPlugin.logSource.LogMessage("Artifact of Debris disabled, unhooking (or already unhooked) required methods.");
                 if (ScrapChestsPlugin._currentlyHooked)
                 {
                     On.RoR2.Run.BuildDropTable -= DropTableHook;

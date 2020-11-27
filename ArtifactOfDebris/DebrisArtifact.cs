@@ -22,6 +22,7 @@ namespace ScrapChests.ArtifactOfDebris
             def.smallIconSelectedSprite = Resources.Load<Sprite>("@Debris:Assets/Scrap.png");
 
             ArtifactCatalog.getAdditionalEntries += AddDebrisArtifact;
+            ScrapChestsPlugin.logSource.LogMessage("Added Artifact of Debris to Artifact list.");
 
             On.RoR2.Run.Start += Hooks.RunStartHook;
         }
