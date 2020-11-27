@@ -7,9 +7,36 @@ using UnityEngine.Networking;
 
 namespace ScrapChests
 {
-    public static class Hooks
+    internal static class Hooks
     {
-        public static void DropTableHook(On.RoR2.Run.orig_BuildDropTable orig, Run self)
+        internal static void RunStartHook(On.RoR2.Run.orig_Start orig, Run self)
+        {
+            if (RunArtifactManager.instance.IsArtifactEnabled(ArtifactOfDebris.DebrisArtifact.def.artifactIndex))
+            {
+                if (!ScrapChestsPlugin._currentlyHooked)
+                {
+                    On.RoR2.Run.BuildDropTable += DropTableHook;
+                    On.RoR2.ShopTerminalBehavior.Start += ShopTerminalHook;
+                    On.RoR2.ChestBehavior.RollItem += RollItemHook;
+                    On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.EnsureMonsterTeamItemCount += EvolutionHook;
+                    ScrapChestsPlugin._currentlyHooked = true;
+                }
+            }
+            else
+            {
+                if (ScrapChestsPlugin._currentlyHooked)
+                {
+                    On.RoR2.Run.BuildDropTable -= DropTableHook;
+                    On.RoR2.ShopTerminalBehavior.Start -= ShopTerminalHook;
+                    On.RoR2.ChestBehavior.RollItem -= RollItemHook;
+                    On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.EnsureMonsterTeamItemCount -= EvolutionHook;
+                    ScrapChestsPlugin._currentlyHooked = false;
+                }
+            }
+            orig(self);
+        }
+
+        internal static void DropTableHook(On.RoR2.Run.orig_BuildDropTable orig, Run self)
         {
             orig(self);
             List<PickupIndex> toInsert = new List<PickupIndex>();
@@ -38,7 +65,7 @@ namespace ScrapChests
             self.availableBossDropList.Add(PickupCatalog.FindPickupIndex(ItemIndex.ScrapYellow));
         }
 
-        public static void ShopTerminalHook(On.RoR2.ShopTerminalBehavior.orig_Start orig, ShopTerminalBehavior self)
+        internal static void ShopTerminalHook(On.RoR2.ShopTerminalBehavior.orig_Start orig, ShopTerminalBehavior self)
         {
             if (NetworkServer.active)
             {
@@ -84,13 +111,13 @@ namespace ScrapChests
             }
         }
 
-        public static void RollItemHook(On.RoR2.ChestBehavior.orig_RollItem orig, ChestBehavior self)
+        internal static void RollItemHook(On.RoR2.ChestBehavior.orig_RollItem orig, ChestBehavior self)
         {
             self.requiredItemTag = ItemTag.Any;
             orig(self);
         }
 
-        public static void EvolutionHook(On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.orig_EnsureMonsterTeamItemCount orig, int arg)
+        internal static void EvolutionHook(On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.orig_EnsureMonsterTeamItemCount orig, int arg)
         {
             return;
         }
