@@ -16,11 +16,16 @@ namespace ScrapChests
         private const string ModVer = "2.0.0";
         private const string ModGuid = "com.Windows10CE.ScrapChests";
 
+        public static ScrapChestsPlugin Instance;
+        internal static BepInEx.Logging.ManualLogSource logSource;
+
         internal static List<List<PickupIndex>> _cachedItemLists = new List<List<PickupIndex>>();
         internal static string[] _exceptionList = { "Duplicator", "LunarCauldron" };
 
         public void Awake()
         {
+            if (Instance = null) Instance = this;
+            logSource = Instance.Logger;
             // Harmony.CreateAndPatchAll(System.Reflection.Assembly.GetExecutingAssembly(), "com.Windows10CE.ScrapChests");
 
             On.RoR2.Run.BuildDropTable += Hooks.DropTableHook;
