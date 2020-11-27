@@ -18,8 +18,8 @@ namespace ScrapChests.ArtifactOfDebris
 
             def.nameToken = "DEB_NAME_TOKEN";
             def.descriptionToken = "DEB_DESC_TOKEN";
-            def.smallIconDeselectedSprite = LoadoutAPI.CreateSkinIcon(Color.grey, Color.grey, Color.grey, Color.grey);
-            def.smallIconSelectedSprite = LoadoutAPI.CreateSkinIcon(Color.white, Color.white, Color.white, Color.white);
+            def.smallIconDeselectedSprite = Resources.Load<Sprite>("@Debris:Assets/Scrap_Dim.png");
+            def.smallIconSelectedSprite = Resources.Load<Sprite>("@Debris:Assets/Scrap.png");
 
             ArtifactCatalog.getAdditionalEntries += AddDebrisArtifact;
 
