@@ -1,4 +1,4 @@
 # ScrapChests
-Risk of Rain 2 mod to change all items purchased from chests/multishops/chance shrines into the equivalent form of scrap.
+Risk of Rain 2 mod to add the Artifact of Debris, which changes all items from chests into scrap to be printed.
 
-Warning: Breaks Artifact of Evolution
+Warning: Breaks Artifact of Evolution when enabled.
