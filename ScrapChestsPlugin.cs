@@ -14,16 +14,16 @@ namespace ScrapChests
     [R2APISubmoduleDependency(new string[] { "ResourcesAPI", "LanguageAPI" })]
     public class ScrapChestsPlugin : BaseUnityPlugin
     {
-        private const string ModName = "ScrapChests";
-        private const string ModVer = "3.0.0";
-        private const string ModGuid = "com.Windows10CE.ScrapChests";
+        public const string ModName = "ScrapChests";
+        public const string ModVer = "3.0.0";
+        public const string ModGuid = "com.Windows10CE.ScrapChests";
 
         public static ScrapChestsPlugin Instance;
         internal static BepInEx.Logging.ManualLogSource logSource;
 
-        internal static List<List<PickupIndex>> _cachedItemLists = new List<List<PickupIndex>>();
-        internal static string[] _exceptionList = { "Duplicator", "LunarCauldron" };
-        internal static bool _currentlyHooked;
+        public static List<List<PickupIndex>> _cachedItemLists = new List<List<PickupIndex>>();
+        public static string[] _exceptionList { get; internal set; } = { "Duplicator", "LunarCauldron" };
+        public static bool _currentlyHooked { get; internal set; }
 
         public void Awake()
         {
