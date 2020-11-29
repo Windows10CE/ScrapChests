@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using R2API.Utils;
 using RoR2;
+using RoR2.Artifacts;
 using UnityEngine.Networking;
 
 namespace ScrapChests
@@ -19,7 +19,7 @@ namespace ScrapChests
                     On.RoR2.Run.BuildDropTable += DropTableHook;
                     On.RoR2.ShopTerminalBehavior.Start += ShopTerminalHook;
                     On.RoR2.ChestBehavior.RollItem += RollItemHook;
-                    On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.EnsureMonsterTeamItemCount += EvolutionHook;
+                    On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.GenerateAvailableItemsSet += EvolutionItemListHook;
                     ScrapChestsPlugin._currentlyHooked = true;
                 }
             }
@@ -31,7 +31,7 @@ namespace ScrapChests
                     On.RoR2.Run.BuildDropTable -= DropTableHook;
                     On.RoR2.ShopTerminalBehavior.Start -= ShopTerminalHook;
                     On.RoR2.ChestBehavior.RollItem -= RollItemHook;
-                    On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.EnsureMonsterTeamItemCount -= EvolutionHook;
+                    On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.GenerateAvailableItemsSet -= EvolutionItemListHook;
                     ScrapChestsPlugin._currentlyHooked = false;
                 }
             }
@@ -119,9 +119,28 @@ namespace ScrapChests
             orig(self);
         }
 
+        /*
         internal static void EvolutionHook(On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.orig_EnsureMonsterTeamItemCount orig, int arg)
         {
             return;
+        }
+        */
+
+        internal static void EvolutionItemListHook(On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.orig_GenerateAvailableItemsSet orig)
+        {
+            MonsterTeamGainsItemsArtifactManager.availableTier1Items = GenerateDropList(ScrapChestsPlugin._cachedItemLists[0]);
+            MonsterTeamGainsItemsArtifactManager.availableTier2Items = GenerateDropList(ScrapChestsPlugin._cachedItemLists[1]);
+            MonsterTeamGainsItemsArtifactManager.availableTier3Items = GenerateDropList(ScrapChestsPlugin._cachedItemLists[2]);
+        }
+
+        private static ItemIndex[] GenerateDropList(List<PickupIndex> pickupsList)
+        {
+            return pickupsList
+                .Select(x => ItemCatalog.GetItemDef(PickupCatalog.GetPickupDef(x)?.itemIndex ?? ItemIndex.None))
+                .Where(x => x is not null)
+                .Where(x => MonsterTeamGainsItemsArtifactManager.IsItemAllowedForMonsters(x))
+                .Select(x => x.itemIndex)
+                .ToArray();
         }
     }
 }
