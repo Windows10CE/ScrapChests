@@ -109,7 +109,7 @@ namespace ScrapChests
             }
             if (NetworkClient.active)
             {
-                self.InvokeMethod("UpdatePickupDisplayAndAnimations");
+                self.UpdatePickupDisplayAndAnimations();
             }
         }
 
