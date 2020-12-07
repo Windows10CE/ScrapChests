@@ -20,6 +20,7 @@ namespace ScrapChests
                     On.RoR2.ShopTerminalBehavior.Start += ShopTerminalHook;
                     On.RoR2.ChestBehavior.RollItem += RollItemHook;
                     On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.GenerateAvailableItemsSet += EvolutionItemListHook;
+                    On.RoR2.ArenaMissionController.OnStartServer += VoidFieldsStartHook;
                     ScrapChestsPlugin._currentlyHooked = true;
                 }
             }
@@ -141,6 +142,14 @@ namespace ScrapChests
                 .Where(x => MonsterTeamGainsItemsArtifactManager.IsItemAllowedForMonsters(x))
                 .Select(x => x.itemIndex)
                 .ToArray();
+        }
+
+        private static void VoidFieldsStartHook(On.RoR2.ArenaMissionController.orig_OnStartServer orig, ArenaMissionController self)
+        {
+            orig(self);
+            self.availableTier1DropList = ScrapChestsPlugin._cachedItemLists[0].Where(x => ArenaMissionController.IsPickupAllowedForMonsters(x)).ToList();
+            self.availableTier2DropList = ScrapChestsPlugin._cachedItemLists[1].Where(x => ArenaMissionController.IsPickupAllowedForMonsters(x)).ToList();
+            self.availableTier3DropList = ScrapChestsPlugin._cachedItemLists[2].Where(x => ArenaMissionController.IsPickupAllowedForMonsters(x)).ToList();
         }
     }
 }
