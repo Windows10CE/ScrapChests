@@ -21,7 +21,7 @@ namespace ScrapChests
         public static ScrapChestsPlugin Instance;
         internal static BepInEx.Logging.ManualLogSource logSource;
 
-        public static List<List<PickupIndex>> _cachedItemLists = new List<List<PickupIndex>>();
+        public static List<PickupIndex>[] _cachedItemLists = new List<PickupIndex>[4];
         public static string[] _exceptionList { get; internal set; } = { "Duplicator", "LunarCauldron" };
         public static bool _currentlyHooked { get; internal set; }
 

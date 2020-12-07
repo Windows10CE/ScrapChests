@@ -44,25 +44,25 @@ namespace ScrapChests
             List<PickupIndex> toInsert = new List<PickupIndex>();
 
             self.availableTier1DropList.ForEach(x => toInsert.Add(x));
-            ScrapChestsPlugin._cachedItemLists.Add(toInsert);
+            ScrapChestsPlugin._cachedItemLists[0] = toInsert;
             self.availableTier1DropList.Clear();
             self.availableTier1DropList.Add(PickupCatalog.FindPickupIndex(ItemIndex.ScrapWhite));
 
             toInsert = new List<PickupIndex>();
             self.availableTier2DropList.ForEach(x => toInsert.Add(x));
-            ScrapChestsPlugin._cachedItemLists.Add(toInsert);
+            ScrapChestsPlugin._cachedItemLists[1] = toInsert;
             self.availableTier2DropList.Clear();
             self.availableTier2DropList.Add(PickupCatalog.FindPickupIndex(ItemIndex.ScrapGreen));
 
             toInsert = new List<PickupIndex>();
             self.availableTier3DropList.ForEach(x => toInsert.Add(x));
-            ScrapChestsPlugin._cachedItemLists.Add(toInsert);
+            ScrapChestsPlugin._cachedItemLists[2] = toInsert;
             self.availableTier3DropList.Clear();
             self.availableTier3DropList.Add(PickupCatalog.FindPickupIndex(ItemIndex.ScrapRed));
 
             toInsert = new List<PickupIndex>();
             self.availableBossDropList.ForEach(x => toInsert.Add(x));
-            ScrapChestsPlugin._cachedItemLists.Add(toInsert);
+            ScrapChestsPlugin._cachedItemLists[3] = toInsert;
             self.availableBossDropList.Clear();
             self.availableBossDropList.Add(PickupCatalog.FindPickupIndex(ItemIndex.ScrapYellow));
         }
@@ -74,7 +74,7 @@ namespace ScrapChests
                 PickupIndex index = PickupIndex.none;
                 if (!self.dropTable)
                 {
-                    List<List<PickupIndex>> itemList = ScrapChestsPlugin._exceptionList.Any(x => self.name.Contains(x)) ? ScrapChestsPlugin._cachedItemLists : new List<List<PickupIndex>> {
+                    List<PickupIndex>[] itemList = ScrapChestsPlugin._exceptionList.Any(x => self.name.Contains(x)) ? ScrapChestsPlugin._cachedItemLists : new List<PickupIndex>[] {
                             Run.instance.availableTier1DropList,
                             Run.instance.availableTier2DropList,
                             Run.instance.availableTier3DropList,
