@@ -15,7 +15,7 @@ namespace ScrapChests
     public class ScrapChestsPlugin : BaseUnityPlugin
     {
         public const string ModName = "ScrapChests";
-        public const string ModVer = "3.0.0";
+        public const string ModVer = "3.1.0";
         public const string ModGuid = "com.Windows10CE.ScrapChests";
 
         public static ScrapChestsPlugin Instance;
