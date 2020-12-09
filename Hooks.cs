@@ -33,6 +33,7 @@ namespace ScrapChests
                     On.RoR2.ShopTerminalBehavior.Start -= ShopTerminalHook;
                     On.RoR2.ChestBehavior.RollItem -= RollItemHook;
                     On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.GenerateAvailableItemsSet -= EvolutionItemListHook;
+                    On.RoR2.ArenaMissionController.OnStartServer -= VoidFieldsStartHook;
                     ScrapChestsPlugin._currentlyHooked = false;
                 }
             }
