@@ -12,6 +12,7 @@ namespace ScrapChests
 
     [BepInDependency(R2API.R2API.PluginGUID, BepInDependency.DependencyFlags.HardDependency)]
     [R2APISubmoduleDependency(new string[] { nameof(ResourcesAPI), nameof(LanguageAPI) })]
+    [BepInDependency(LunarScrap.LunarScrapPlugin.ModGuid, BepInDependency.DependencyFlags.SoftDependency)]
     public class ScrapChestsPlugin : BaseUnityPlugin
     {
         public const string ModName = "ScrapChests";
@@ -21,9 +22,11 @@ namespace ScrapChests
         public static ScrapChestsPlugin Instance;
         internal static BepInEx.Logging.ManualLogSource logSource;
 
-        public static List<PickupIndex>[] _cachedItemLists = new List<PickupIndex>[4];
+        public static List<PickupIndex>[] _cachedItemLists = new List<PickupIndex>[5];
         public static string[] _exceptionList { get; internal set; } = { "Duplicator", "LunarCauldron" };
         public static bool _currentlyHooked { get; internal set; }
+
+        internal static bool LunarScrapEnabled { get; private set; }
 
         public void Awake()
         {
@@ -31,6 +34,8 @@ namespace ScrapChests
             logSource = Instance.Logger;
 
             AddBundleProvider("@Debris", Properties.Resources.debris);
+
+            LunarScrapEnabled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(LunarScrap.LunarScrapPlugin.ModGuid);
 
             ArtifactOfDebris.DebrisArtifact.Init();
         }

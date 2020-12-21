@@ -64,6 +64,9 @@
       <HintPath>Libs\HGUnityUtils.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="LunarScrap">
+      <HintPath>Libs\NotStubbedButItsFine\LunarScrap.dll</HintPath>
+    </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp">
       <HintPath>Libs\MMHOOK_Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -126,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArtifactOfDebris\DebrisArtifact.cs" />
+    <Compile Include="Compat\LunarScrapCompat.cs" />
     <Compile Include="Hooks.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

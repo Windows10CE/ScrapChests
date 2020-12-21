@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RoR2;
 using RoR2.Artifacts;
+using ScrapChests.Compat;
 using UnityEngine.Networking;
 
 namespace ScrapChests
@@ -67,6 +68,19 @@ namespace ScrapChests
             ScrapChestsPlugin._cachedItemLists[3] = toInsert;
             self.availableBossDropList.Clear();
             self.availableBossDropList.Add(PickupCatalog.FindPickupIndex(ItemIndex.ScrapYellow));
+
+            if (ScrapChestsPlugin.LunarScrapEnabled)
+            {
+                toInsert = new List<PickupIndex>();
+                self.availableLunarDropList.ForEach(x => toInsert.Add(x));
+                ScrapChestsPlugin._cachedItemLists[4] = toInsert;
+                self.availableLunarDropList.Clear();
+                self.availableLunarDropList.Add(PickupCatalog.FindPickupIndex(LunarScrapCompat.GetLunarScrapIndex()));
+            }
+            else
+            {
+                ScrapChestsPlugin._cachedItemLists[4] = Run.instance.availableLunarDropList;
+            }
         }
 
         internal static void ShopTerminalHook(On.RoR2.ShopTerminalBehavior.orig_Start orig, ShopTerminalBehavior self)
@@ -74,13 +88,14 @@ namespace ScrapChests
             if (NetworkServer.active)
             {
                 PickupIndex index = PickupIndex.none;
-                if (!self.dropTable)
+                if (!self.dropTable || (ScrapChestsPlugin.LunarScrapEnabled && self.dropTable.IsLunarDropTable()))
                 {
                     List<PickupIndex>[] itemList = ScrapChestsPlugin._exceptionList.Any(x => self.name.Contains(x)) ? ScrapChestsPlugin._cachedItemLists : new List<PickupIndex>[] {
                             Run.instance.availableTier1DropList,
                             Run.instance.availableTier2DropList,
                             Run.instance.availableTier3DropList,
-                            Run.instance.availableBossDropList
+                            Run.instance.availableBossDropList,
+                            Run.instance.availableLunarDropList
                         };
                     List<PickupIndex> list;
                     switch (self.itemTier)
@@ -95,7 +110,7 @@ namespace ScrapChests
                             list = itemList[2];
                             break;
                         case ItemTier.Lunar:
-                            list = Run.instance.availableLunarDropList;
+                            list = itemList[4];
                             break;
                         case ItemTier.Boss:
                             list = itemList[3];
