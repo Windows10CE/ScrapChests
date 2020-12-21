@@ -10,8 +10,8 @@ namespace ScrapChests
     [BepInPlugin(ModGuid, ModName, ModVer)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
 
-    [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
-    [R2APISubmoduleDependency(new string[] { "ResourcesAPI", "LanguageAPI" })]
+    [BepInDependency(R2API.R2API.PluginGUID, BepInDependency.DependencyFlags.HardDependency)]
+    [R2APISubmoduleDependency(new string[] { nameof(ResourcesAPI), nameof(LanguageAPI) })]
     public class ScrapChestsPlugin : BaseUnityPlugin
     {
         public const string ModName = "ScrapChests";
