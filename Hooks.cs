@@ -85,7 +85,7 @@ namespace ScrapChests
 
         internal static void ShopTerminalHook(On.RoR2.ShopTerminalBehavior.orig_Start orig, ShopTerminalBehavior self)
         {
-            if (NetworkServer.active)
+            if (NetworkServer.active && !self.pickupIndex.isValid)
             {
                 PickupIndex index = PickupIndex.none;
                 if (!self.dropTable || (ScrapChestsPlugin.LunarScrapEnabled && self.dropTable.IsLunarDropTable()))

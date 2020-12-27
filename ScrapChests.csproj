@@ -66,6 +66,7 @@
     </Reference>
     <Reference Include="LunarScrap">
       <HintPath>Libs\NotStubbedButItsFine\LunarScrap.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp">
       <HintPath>Libs\MMHOOK_Assembly-CSharp.dll</HintPath>
