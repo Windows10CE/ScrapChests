@@ -25,6 +25,7 @@ namespace ScrapChests.ArtifactOfDebris
             ScrapChestsPlugin.logSource.LogMessage("Added Artifact of Debris to Artifact list.");
 
             On.RoR2.Run.Start += Hooks.RunStartHook;
+            IL.RoR2.ShopTerminalBehavior.GenerateNewPickupServer += Hooks.ShopTerminalGenPickupHook;
         }
 
         private static void AddDebrisArtifact(List<ArtifactDef> list)

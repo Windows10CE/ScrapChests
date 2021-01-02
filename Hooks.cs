@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using RoR2;
 using RoR2.Artifacts;
 using ScrapChests.Compat;
@@ -18,7 +21,6 @@ namespace ScrapChests
                 if (!ScrapChestsPlugin._currentlyHooked)
                 {
                     On.RoR2.Run.BuildDropTable += DropTableHook;
-                    On.RoR2.ShopTerminalBehavior.Start += ShopTerminalHook;
                     On.RoR2.ChestBehavior.RollItem += RollItemHook;
                     On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.GenerateAvailableItemsSet += EvolutionItemListHook;
                     On.RoR2.ArenaMissionController.OnStartServer += VoidFieldsStartHook;
@@ -31,7 +33,6 @@ namespace ScrapChests
                 if (ScrapChestsPlugin._currentlyHooked)
                 {
                     On.RoR2.Run.BuildDropTable -= DropTableHook;
-                    On.RoR2.ShopTerminalBehavior.Start -= ShopTerminalHook;
                     On.RoR2.ChestBehavior.RollItem -= RollItemHook;
                     On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.GenerateAvailableItemsSet -= EvolutionItemListHook;
                     On.RoR2.ArenaMissionController.OnStartServer -= VoidFieldsStartHook;
@@ -65,7 +66,7 @@ namespace ScrapChests
 
             toInsert = new List<PickupIndex>();
             self.availableBossDropList.ForEach(x => toInsert.Add(x));
-            ScrapChestsPlugin._cachedItemLists[3] = toInsert;
+            ScrapChestsPlugin._cachedItemLists[4] = toInsert;
             self.availableBossDropList.Clear();
             self.availableBossDropList.Add(PickupCatalog.FindPickupIndex(ItemIndex.ScrapYellow));
 
@@ -73,60 +74,51 @@ namespace ScrapChests
             {
                 toInsert = new List<PickupIndex>();
                 self.availableLunarDropList.ForEach(x => toInsert.Add(x));
-                ScrapChestsPlugin._cachedItemLists[4] = toInsert;
+                ScrapChestsPlugin._cachedItemLists[3] = toInsert;
                 self.availableLunarDropList.Clear();
                 self.availableLunarDropList.Add(PickupCatalog.FindPickupIndex(LunarScrapCompat.GetLunarScrapIndex()));
             }
             else
             {
                 ScrapChestsPlugin._cachedItemLists[4] = Run.instance.availableLunarDropList;
-            }
+            } 
         }
 
-        internal static void ShopTerminalHook(On.RoR2.ShopTerminalBehavior.orig_Start orig, ShopTerminalBehavior self)
+        private static readonly FieldInfo[] DropListFields = new FieldInfo[]
         {
-            if (NetworkServer.active && !self.pickupIndex.isValid)
+            typeof(Run).GetField("availableTier1DropList"),
+            typeof(Run).GetField("availableTier2DropList"),
+            typeof(Run).GetField("availableTier3DropList"),
+            typeof(Run).GetField("availableLunarDropList"),
+            typeof(Run).GetField("availableBossDropList")
+        };
+
+        internal static void ShopTerminalGenPickupHook(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            
+            for (int i = 0; i < 5; i++)
             {
-                PickupIndex index = PickupIndex.none;
-                if (!self.dropTable || (ScrapChestsPlugin.LunarScrapEnabled && self.dropTable.IsLunarDropTable()))
+                int local = 0;
+                var found = c.TryGotoNext(MoveType.Before,
+                    x => x.MatchCallOrCallvirt(typeof(Run).GetProperty("instance").GetGetMethod()),
+                    x => x.MatchLdfld(DropListFields[i]),
+                    x => x.MatchStloc(out local)
+                );
+                if (found && ((ItemTier)i != ItemTier.Lunar || ScrapChestsPlugin.LunarScrapEnabled))
                 {
-                    List<PickupIndex>[] itemList = ScrapChestsPlugin._exceptionList.Any(x => self.name.Contains(x)) ? ScrapChestsPlugin._cachedItemLists : new List<PickupIndex>[] {
-                            Run.instance.availableTier1DropList,
-                            Run.instance.availableTier2DropList,
-                            Run.instance.availableTier3DropList,
-                            Run.instance.availableBossDropList,
-                            Run.instance.availableLunarDropList
-                        };
-                    List<PickupIndex> list;
-                    switch (self.itemTier)
+                    c.Index += 2;
+                    c.Emit(OpCodes.Ldarg_0);
+                    c.Emit(OpCodes.Ldc_I4, i);
+                    c.EmitDelegate<Func<List<PickupIndex>, ShopTerminalBehavior, int, List<PickupIndex>>>((currentList, shop, tier) =>
                     {
-                        case ItemTier.Tier1:
-                            list = itemList[0];
-                            break;
-                        case ItemTier.Tier2:
-                            list = itemList[1];
-                            break;
-                        case ItemTier.Tier3:
-                            list = itemList[2];
-                            break;
-                        case ItemTier.Lunar:
-                            list = itemList[4];
-                            break;
-                        case ItemTier.Boss:
-                            list = itemList[3];
-                            break;
-                        default:
-                            throw new Exception("Shop given with no dropTable and no itemTier, can't continue...");
-                    }
-                    index = list[UnityEngine.Random.Range(0, list.Count - 1)];
+                        if (!ScrapChestsPlugin._currentlyHooked)
+                            return currentList;
+                        if (ScrapChestsPlugin._exceptionList.Any(x => shop.name.Contains(x)))
+                            return ScrapChestsPlugin._cachedItemLists[tier];
+                        return new List<PickupIndex> { PickupCatalog.FindPickupIndex(ItemCatalog.itemDefs.First(x => x.tier == (ItemTier)tier && x.ContainsTag(ItemTag.Scrap)).itemIndex) };
+                    });
                 }
-                else
-                    index = self.dropTable.GenerateDrop(Run.instance.treasureRng);
-                self.SetPickupIndex(index);
-            }
-            if (NetworkClient.active)
-            {
-                self.UpdatePickupDisplayAndAnimations();
             }
         }
 
