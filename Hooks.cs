@@ -136,13 +136,6 @@ namespace ScrapChests
             orig(self);
         }
 
-        /*
-        internal static void EvolutionHook(On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.orig_EnsureMonsterTeamItemCount orig, int arg)
-        {
-            return;
-        }
-        */
-
         internal static void EvolutionItemListHook(On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.orig_GenerateAvailableItemsSet orig)
         {
             MonsterTeamGainsItemsArtifactManager.availableTier1Items = GenerateDropList(ScrapChestsPlugin._cachedItemLists[0]);
