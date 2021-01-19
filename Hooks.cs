@@ -4,8 +4,10 @@ using System.Linq;
 using System.Reflection;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using RoR2;
 using RoR2.Artifacts;
+using R2API;
 using ScrapChests.Compat;
 using UnityEngine.Networking;
 
@@ -20,6 +22,7 @@ namespace ScrapChests
                 ScrapChestsPlugin.logSource.LogMessage("Artifact of Debris enabled, hooking (or already hooked) required methods.");
                 if (!ScrapChestsPlugin._currentlyHooked)
                 {
+                    r2chancedetour.Apply();
                     On.RoR2.Run.BuildDropTable += DropTableHook;
                     On.RoR2.ChestBehavior.RollItem += RollItemHook;
                     On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.GenerateAvailableItemsSet += EvolutionItemListHook;
@@ -32,6 +35,7 @@ namespace ScrapChests
                 ScrapChestsPlugin.logSource.LogMessage("Artifact of Debris disabled, unhooking (or already unhooked) required methods.");
                 if (ScrapChestsPlugin._currentlyHooked)
                 {
+                    r2chancedetour.Undo();
                     On.RoR2.Run.BuildDropTable -= DropTableHook;
                     On.RoR2.ChestBehavior.RollItem -= RollItemHook;
                     On.RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.GenerateAvailableItemsSet -= EvolutionItemListHook;
@@ -40,6 +44,33 @@ namespace ScrapChests
                 }
             }
             orig(self);
+        }
+
+        private static IDetour r2chancedetour = new Hook(typeof(ItemDropAPI).GetMethod("GetSelection", new Type[] { typeof(ItemDropLocation), typeof(float) }), ((Func<Func<ItemDropLocation, float, PickupIndex>, ItemDropLocation, float, PickupIndex>)R2APIChanceShrineHookHook).Method, new HookConfig
+        {
+            ManualApply = true
+        });
+
+        internal static PickupIndex R2APIChanceShrineHookHook(Func<ItemDropLocation, float, PickupIndex> orig, ItemDropLocation loc, float item)
+        {
+            PickupIndex r2apiChoice = orig(loc, item);
+
+            if (r2apiChoice.pickupDef.equipmentIndex != EquipmentIndex.None || loc != ItemDropLocation.Shrine)
+                return r2apiChoice;
+
+
+            PickupIndex newIndex = PickupIndex.none;
+
+            while (newIndex == PickupIndex.none)
+            {
+                WeightedSelection<PickupIndex> select = new WeightedSelection<PickupIndex>(4);
+                select.AddChoice(Run.instance.treasureRng.NextElementUniform<PickupIndex>(Run.instance.availableTier1DropList), 0.36f);
+                select.AddChoice(Run.instance.treasureRng.NextElementUniform<PickupIndex>(Run.instance.availableTier2DropList), 0.09f);
+                select.AddChoice(Run.instance.treasureRng.NextElementUniform<PickupIndex>(Run.instance.availableTier3DropList), 0.01f);
+                select.AddChoice(PickupIndex.none, 0.54f);
+                newIndex = select.Evaluate(Run.instance.treasureRng.nextNormalizedFloat);
+            }
+            return newIndex;
         }
 
         internal static void DropTableHook(On.RoR2.Run.orig_BuildDropTable orig, Run self)
