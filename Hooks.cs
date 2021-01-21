@@ -55,7 +55,7 @@ namespace ScrapChests
         {
             PickupIndex r2apiChoice = orig(loc, item);
 
-            if (r2apiChoice.pickupDef.equipmentIndex != EquipmentIndex.None || loc != ItemDropLocation.Shrine)
+            if (r2apiChoice == null || !r2apiChoice.isValid || r2apiChoice.pickupDef.equipmentIndex != EquipmentIndex.None || loc != ItemDropLocation.Shrine)
                 return r2apiChoice;
 
 
