@@ -3,4 +3,6 @@ Risk of Rain 2 mod to add the Artifact of Debris, which changes all items from c
 
 No longer breaks Artifact of Evolution :) (or the void fields)
 
-Now contains support for LunarScrap, download it over at https://thunderstore.io/package/Windows10CE/LunarScrap/
+Contains support for LunarScrap, download it over at https://thunderstore.io/package/Windows10CE/LunarScrap/
+
+Credit for the icon all go to @breadguy#5000 on the modding Discord, it would've stayed the vanilla white scrap icon forever if not for him.

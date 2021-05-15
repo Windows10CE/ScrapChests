@@ -63,9 +63,9 @@ namespace ScrapChests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] debris {
+        internal static byte[] debrisartifact {
             get {
-                object obj = ResourceManager.GetObject("debris", resourceCulture);
+                object obj = ResourceManager.GetObject("debrisartifact", resourceCulture);
                 return ((byte[])(obj));
             }
         }

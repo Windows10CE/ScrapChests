@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.30621.155
+VisualStudioVersion = 16.0.31229.75
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrapChests", "ScrapChests.csproj", "{E4991B57-53F1-4A45-A1F2-E08D978CC4CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrapChests", "ScrapChests.csproj", "{D7D4E0CA-275A-447F-97FF-75B3ED58D464}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E4991B57-53F1-4A45-A1F2-E08D978CC4CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E4991B57-53F1-4A45-A1F2-E08D978CC4CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E4991B57-53F1-4A45-A1F2-E08D978CC4CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E4991B57-53F1-4A45-A1F2-E08D978CC4CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7D4E0CA-275A-447F-97FF-75B3ED58D464}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7D4E0CA-275A-447F-97FF-75B3ED58D464}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7D4E0CA-275A-447F-97FF-75B3ED58D464}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7D4E0CA-275A-447F-97FF-75B3ED58D464}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {CAE336FE-AA1E-4671-B538-5FFC1BE3F439}
+		SolutionGuid = {9118228B-F0F9-4334-B730-FF7DE69D66F4}
 	EndGlobalSection
 EndGlobal
